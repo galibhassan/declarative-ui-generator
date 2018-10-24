@@ -1,0 +1,21 @@
+{
+  "name": "duigen",
+  "version": "1.0.0",
+  "description": "Generates ui from prescribed javascript objects",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/galibhassan/declarative-ui-generator.git"
+  },
+  "keywords": [
+    "ui",
+    "declarative"
+  ],
+  "author": "Galib Hassan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/galibhassan/declarative-ui-generator/issues"
+  },
+  "homepage": "https://github.com/galibhassan/declarative-ui-generator#readme"
+}
