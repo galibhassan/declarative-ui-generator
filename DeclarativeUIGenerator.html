@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Declarative UI Generator</title>
+</head>
+
+<body>
+  <script>
+    uiBlocks = [
+      [
+        { type: 'heading', label: 'Transforms', color:'#3B4252' },
+        { type: 'description', text: 'Position' },
+        { type: 'lineFeed' },
+        { type: 'slider', label: 'x', min: 0, max: 255 },
+        { type: 'slider', label: 'y', min: 0, max: 255 },
+        { type: 'slider', label: 'z', min: 0, max: 255 },
+        { type: 'lineFeed' },
+        { type: 'description', text: 'Rotation' },
+        { type: 'lineFeed' },
+        { type: 'slider', label: 'Pitch', min: 0, max: 255 },
+        { type: 'slider', label: 'Roll', min: 0, max: 255 },
+        { type: 'slider', label: 'Yaw', min: 0, max: 255 },
+      ],
+      [
+        { type: 'heading', label: 'Materials', color:'#BF616A'},
+        { type: 'dropdownSelect', label:'Shader', options:['Lambert','Phong','Toon']},
+        { type: 'checkbox', label: 'Reflection' },
+        { type: 'checkbox', label: 'Shadow' },
+        { type: 'textInput', label: 'Base Color in RGBA' },
+
+      ],
+      [
+        { type: 'heading', label: 'heading', color:'#EBCB8B' },
+        { type: 'slider', label: 'slider', min: 0, max: 100 },
+        { type: 'lineFeed' },
+        { type: 'textInput', label: 'textInput', min: 0, max: 100 },
+        { type: 'lineFeed' },
+        { type: 'checkbox', label: 'checkbox'},
+        { type: 'dropdownSelect', label:'dropdownSelect', options:['option 01','option 02','option 03']}, 
+      ],
+      [
+        { type: 'heading', label: 'Colors', color:'#A3BE8C' },
+        { type: 'description', text: 'Play around with the colors' },
+        { type: 'lineFeed' },
+        { type: 'slider', label: 'Red', min: 0, max: 100 },
+        { type: 'slider', label: 'Green', min: 0, max: 100 },
+        { type: 'slider', label: 'Blue', min: 0, max: 100 },
+        { type: 'lineFeed' },
+        { type: 'textInput', label: 'Cyan', min: 0, max: 100 },
+        { type: 'textInput', label: 'Magenda', min: 0, max: 100 },
+        { type: 'textInput', label: 'Yellow', min: 0, max: 100 },
+      ]
+    ];
+
+    var getRepeatedTag = function(tag, childrenArr){
+      outputString = '';
+      for(var i=0; i<childrenArr.length; i++){
+        outputString += `<${tag}> ${childrenArr[i]} </${tag}>`
+      };
+      return outputString;
+    }
+
+    var uiGen = function (uiObj) {
+      var borderRadius = '5px 5px 5px 0px';
+      var themeColor = 'rgba(15, 99, 188,1)';
+      var boxShadow = '1px 1px 10px 1px rgba(0,0,0,0.1)';
+
+      var outputHTLBlocksArr = [];
+      for (var i = 0; i < uiObj.length; i++) {
+        var outputHTML = ''
+        for (var j = 0; j < uiObj[i].length; j++) {
+          var currentElement = uiObj[i][j];
+          switch (currentElement.type) {
+            case 'lineFeed':
+              outputHTML += `<br/>`;
+              break;
+            case 'heading':
+              outputHTML += `<div style="
+                                background-color: ${currentElement.color || themeColor};
+                                border-radius: ${borderRadius};
+                                color: white;
+                                padding: 5px;
+                                width: 100%;
+                                margin-top: -20px;
+                                margin-left: -20px;
+                                box-shadow: ${boxShadow}
+                              ">${currentElement.label}</div>`;
+              break;
+            case 'description':
+              outputHTML += `<div style="display:inline-block; margin-left:0px; margin-top:10px" > ${currentElement.text} </div>`;
+              break;
+            case 'dropdownSelect':
+              outputHTML += `<div style="box-shadow:${boxShadow};display:inline-block; margin-left:10px; margin-top:10px; margin-right:10px; border:1px solid rgba(0,0,0,0.1); padding:5px; border-radius:5px" >
+                  <div style="margin-bottom:5px">${currentElement.label}</div>
+                  <select style="border:1px solid rgba(0,0,0,.1);border-radius:3px;">${getRepeatedTag('option', currentElement.options)}</select>  
+                </div>`;
+              break;
+            case 'slider':
+              outputHTML += `<div style="box-shadow:${boxShadow}; display:inline-block;  margin-left:10px; margin-top:10px; border:0px solid rgba(0,0,0,0.1); padding:5px; border-radius:5px"> ${currentElement.label} <input id="${currentElement.type}_${currentElement.label}" type="range" min="${currentElement.min}" max="${currentElement.max}"> </div>`
+              break;
+            case 'textInput':
+              outputHTML += `<div style="box-shadow:${boxShadow};display:inline-block; margin-left:10px; margin-top:10px;"> <input style="padding:5px; border:1px solid rgba(0,0,0,0.1); border-radius:5px" id="textInputs_${currentElement.label}" type="text" placeholder="${currentElement.label}"/> </div>`
+              break;
+            case 'checkbox':
+              outputHTML += `<div style="box-shadow:${boxShadow};display:inline-block; margin-left:10px; margin-top:10px;border:1px solid rgba(0,0,0,0.1); padding:5px; border-radius:5px"> <input id="checkbox_${currentElement.label}" type="checkbox"> ${currentElement.label} </input> </div>`
+              break;
+          }
+        }
+        // outputHTML += `<br/><br/><br/>`
+        var currentBlock = `
+          <div style="
+            display: inline-block;
+            vertical-align:top;
+            box-shadow: ${boxShadow};
+            padding: 20px;
+            margin:5px;
+            border-radius:${borderRadius};
+            font-family:sans-serif;
+            font-size: 0.85rem;
+            color: rgba(100,100,100,1)
+          "> ${outputHTML} </div>`
+        outputHTLBlocksArr.push(currentBlock);
+      }
+
+      return outputHTLBlocksArr.join("");
+    }
+
+    document.body.innerHTML = uiGen(uiBlocks);
+
+  </script>
+
+</body>
+
+</html>
